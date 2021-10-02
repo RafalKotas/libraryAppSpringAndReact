@@ -1,0 +1,18 @@
+#paginationElement:hover {
+    cursor: pointer;
+    background-color: #bec1c2;
+}
+
+.placeAtBottom {
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    top: 0px;
+}
+
+.placeAtBottom {
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    bottom: 0px;
+}

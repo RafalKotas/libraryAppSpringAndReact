@@ -1,0 +1,14 @@
+#bookEditHeader {
+    font-family: 'Rock Salt', cursive;
+}
+
+.propertyHeader {
+    font-family: 'Viaoda Libre', cursive;
+    color: #b3b300;
+}
+
+.updateBtn {
+    letter-spacing: 3px;
+    font-family: 'Sofia', cursive;
+    font-size: 25px;
+}

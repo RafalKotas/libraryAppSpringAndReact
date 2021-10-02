@@ -1,0 +1,19 @@
+#borrowingsHeader {
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
+.w100elementParent {
+    white-space: nowrap;
+}
+
+.w50elementChild {
+    white-space: normal;
+    vertical-align: top;
+}
+
+#borrowingParametersOnRight {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+}

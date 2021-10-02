@@ -1,0 +1,12 @@
+#libraryMainSection {
+    position: "relative";
+}
+
+#filterSection {
+    border: 1px solid gray;
+    background: linear-gradient(rgb(243, 243, 97), orange);
+}
+
+#paginationStyle > * {
+    background-color: blue;
+}

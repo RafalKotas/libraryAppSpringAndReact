@@ -1,0 +1,26 @@
+#bookListHeader {
+    font-family: 'Rubik Mono One', sans-serif;
+}
+
+#actionBar {
+    position: relative;
+}
+
+#booksPerPageDiv {
+    background-color: red; /* For browsers that do not support gradients */
+    background-image: linear-gradient(to bottom right, red, yellow);
+}
+
+#booksPerPageSelect {
+    cursor: pointer;
+    background-color: aquamarine;
+}
+
+#bookActions {
+    position: absolute;
+    right: 0px;
+}
+
+.tooltipHeader {
+    font-size: 14px;
+}

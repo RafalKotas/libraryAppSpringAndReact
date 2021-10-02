@@ -1,0 +1,15 @@
+.status-filter {
+    width: fit-content;
+    align-self: center;
+    background-color: blue;
+    border: 2px solid black;
+}
+
+#bookStatusParentDiv {
+    display: flex;
+    flex-direction: column;
+}
+.autoWidth {
+    width: 50px;
+    align-self: center;
+}

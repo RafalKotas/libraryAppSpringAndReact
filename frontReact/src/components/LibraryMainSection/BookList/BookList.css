@@ -1,0 +1,38 @@
+.bookEntry:hover {
+    background-color: rgb(146, 235, 45);
+}
+
+.bookEntry {
+    border: 1px solid black;
+    padding: 30px;
+    margin: 5px;
+    background-color: #c9bebd;
+    color: #000000;
+}
+
+.bookEntry:hover {
+    cursor: pointer;
+}
+
+.bookTitle {
+    font-size: 20px;
+}
+
+.genreAnnotation {
+    background-color: #5B0C0C;
+    padding: 1px 5px 1px 5px;
+    color: #E1BE30;
+    left: 10px;
+    font-weight: 700;
+}
+
+.authorAnnotation {
+    right: 10px;
+    font-weight: 700;
+}
+
+.bookYearPublished {
+    right: 5px;
+    font-weight: 500;
+    color: #0A3212;
+}
