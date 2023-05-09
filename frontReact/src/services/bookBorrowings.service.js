@@ -84,4 +84,5 @@ class BookBorrowingsService {
     }
 }
 
-export default new BookBorrowingsService();
+let bookBorrowingService = new BookBorrowingsService();
+export default bookBorrowingService;

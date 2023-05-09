@@ -1,4 +1,4 @@
-import http from "../http-common";
+import http from "../http-common"
 
 class BookDataService {
 
@@ -41,4 +41,5 @@ class BookDataService {
     }
 }
 
-export default new BookDataService();
+let bookDataService = new BookDataService();
+export default bookDataService

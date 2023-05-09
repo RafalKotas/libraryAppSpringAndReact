@@ -16,4 +16,5 @@ class UserManipulationService {
     }
 }
 
-export default new UserManipulationService();
+let userManipulationService = new UserManipulationService();
+export default userManipulationService;

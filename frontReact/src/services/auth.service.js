@@ -1,7 +1,7 @@
 import axios from "axios";
-import { applicationURL_AWS, applicationURL_local } from "./urls";
+import { applicationURL_local } from "./urls";
 
-const API_URL = applicationURL_AWS;
+const API_URL = applicationURL_local;
 
 const register = (username, email, password, firstName, lastName, role) => {
   console.log(role)
