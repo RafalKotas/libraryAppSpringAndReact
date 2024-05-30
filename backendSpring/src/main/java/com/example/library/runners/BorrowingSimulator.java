@@ -12,6 +12,7 @@ import com.example.library.model.User;
 
 import com.example.library.services.BookBorrowingService;
 import com.example.library.services.BookService;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,8 +20,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-//@Component
-//@Order(3)
+@Component
+@Order(3)
+@Slf4j
 public class BorrowingSimulator implements CommandLineRunner {
 
     int BORROWING_IN_APP_REQUIRED = 300;
@@ -189,7 +191,7 @@ public class BorrowingSimulator implements CommandLineRunner {
     public void mainSection(DateTime activeDate) {
         int optionNumber = this.getRandomNumber(0, this.possibleActions.size());
 
-        boolean print_info = false;
+        boolean print_info = true;
 
         switch (this.possibleActions.get(optionNumber)) {
             case ("BORROW"):
@@ -210,7 +212,7 @@ public class BorrowingSimulator implements CommandLineRunner {
 
                     if(this.randomUser.isPresent() && this.randomBook.isPresent()) {
                         if (print_info) {
-                            System.out.println("Book no " + this.randomBookId + " taken by user no " + this.randomUserId + " on " + activeDate);
+                            log.info("Book no {} taken by user no {} on {}", this.randomBookId, this.randomUserId, activeDate);
                         };
                         bookBorrowingRepository.save(new BookBorrowing(this.randomUser.get(), this.randomBook.get(), activeDate.toDate(), activeDate.toDate()));
                     }
@@ -231,7 +233,7 @@ public class BorrowingSimulator implements CommandLineRunner {
                         requestWithBookToGive.setBorrowingDate(activeDate.toDate());
                         bookBorrowingRepository.save(requestWithBookToGive);
                         if (print_info) {
-                            System.out.println("Book no " + this.randomBookId + " taken by user no " + this.randomUserId + " on " + activeDate + (" (in queue before)"));
+                            log.info("Book no {} taken by user no {} on {} (in queue before)");
                         };
                     }
                 }
@@ -249,7 +251,7 @@ public class BorrowingSimulator implements CommandLineRunner {
                     borrowingWithReturningBook.get().setReturnDate(activeDate.toDate());
                     this.bookBorrowingRepository.save(borrowingWithReturningBook.get());
                     if (print_info) {
-                        System.out.println("User no " + this.randomUserId + " returned book no " + this.randomBookId + " on " + activeDate);
+                        log.info("User no {} returned book no {} on {}", this.randomUserId, this.randomBookId, activeDate);
                     };
                 }
                 break;
@@ -263,12 +265,12 @@ public class BorrowingSimulator implements CommandLineRunner {
                 this.bookBorrowingRepository.save(
                         new BookBorrowing(randomUser.get(), randomBook.get(), activeDate.toDate(), null));
                 if (print_info) {
-                    System.out.println("User no " + this.randomUserId + " subscribed for queue book no " + this.randomBookId + " on " + activeDate);
+                    log.info("User no {} subscribed for queue book no {} on {}", this.randomUserId, this.randomBookId, activeDate);
                 };
                 break;
             case ("SKIP"):
                 if (print_info) {
-                    System.out.println("User no " + this.randomUserId + " , move skipped"  + " on " + activeDate);
+                    log.info("User no {} , move skipped on {}", this.randomUserId, activeDate);
                 };
                 break;
             default:
@@ -289,8 +291,6 @@ public class BorrowingSimulator implements CommandLineRunner {
             this.userIds = this.generateUsersIds();
 
             int iteration = 0;
-
-
 
             while(activeDate.isBefore(endDate)) {
                 this.setRandomUserNumber();
