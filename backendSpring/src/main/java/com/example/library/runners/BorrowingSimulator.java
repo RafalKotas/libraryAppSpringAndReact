@@ -279,7 +279,7 @@ public class BorrowingSimulator implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         //
 
         int borrowingCount = bookBorrowingRepository.allBorrowingsCount();
