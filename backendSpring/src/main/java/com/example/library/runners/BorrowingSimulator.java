@@ -73,24 +73,24 @@ public class BorrowingSimulator implements CommandLineRunner {
     int sumOfAvailableDecisions;
     int randomDecisionIndexChoosen;
 
-    public List<Long> generateUsersIds() {
+    private List<Long> generateUsersIds() {
         List<User> allUsers = this.userRepository.findAll();
         List<Long> ids = allUsers.stream().map(User::getId).collect(Collectors.toList());
 
         return ids;
     }
 
-    public void setRandomUserNumber() {
+    private void setRandomUserNumber() {
         int indexInArr = getRandomNumber(0, this.userIds.size());
         this.randomUserId = this.userIds.get(indexInArr);
     }
 
-    public int getRandomNumber(int min, int max) {
+    private int getRandomNumber(int min, int max) {
         Random random = new Random();
         return random.nextInt(max - min) + min;
     }
 
-    public void generatePossibleActions() {
+    private void generatePossibleActions() {
         this.possibleActions = new ArrayList<>();
 
         List<BookBorrowing> userBooksOnHands = this.bookBorrowingRepository.userActualBorrowings(this.randomUserId);
@@ -121,12 +121,12 @@ public class BorrowingSimulator implements CommandLineRunner {
         this.possibleActions.add("SKIP");
     }
 
-    public void generateFreeBooksIds() {
+    private void generateFreeBooksIds() {
         List<Book> freeBooks = this.bookRepository.getAllAvailableWithoutParams();
         this.freeBooksIds = freeBooks.stream().map(Book::getId).collect(Collectors.toList());
     }
 
-    public void generateBooksIdsInUserQueuesThatAreFree() {
+    private void generateBooksIdsInUserQueuesThatAreFree() {
         List<Book> allBooks = this.bookRepository.findAll();
         this.freeBooksIdsWithUserRequest = new ArrayList<>();
 
@@ -140,7 +140,7 @@ public class BorrowingSimulator implements CommandLineRunner {
         }
     }
 
-    public void generateBooksIdsNotInUserQueuesThatAreFree() {
+    private void generateBooksIdsNotInUserQueuesThatAreFree() {
         List<Book> allBooks = this.bookRepository.findAll();
         this.freeBooksIdsWithoutUserRequest = new ArrayList<>();
 
@@ -154,7 +154,7 @@ public class BorrowingSimulator implements CommandLineRunner {
         }
     }
 
-    public void generateBooksToReturnIds() {
+    private void generateBooksToReturnIds() {
         List<BookBorrowing> userActualBorrowings = this.bookBorrowingRepository.userActualBorrowings(this.randomUserId);
         List<Book> booksToReturn = userActualBorrowings.stream().map(BookBorrowing::getBook).collect(Collectors.toList());
 
@@ -163,7 +163,7 @@ public class BorrowingSimulator implements CommandLineRunner {
         this.booksToReturnIds = booksToReturn.stream().map(Book::getId).collect(Collectors.toList());
     }
 
-    public void generateBooksIdsForWhichTheUserCanSubscribeToTheQueue() {
+    private void generateBooksIdsForWhichTheUserCanSubscribeToTheQueue() {
         List<Book> allBooksFromLibrary = bookRepository.findAll();
         this.booksIdsForWhichTheUserCanSubscribeToTheQueue = new ArrayList<>();
         for(Book book : allBooksFromLibrary) {
@@ -173,7 +173,7 @@ public class BorrowingSimulator implements CommandLineRunner {
         }
     }
 
-    public boolean userCanSubscribeToTheBookQueue(int bookId) {
+    private boolean userCanSubscribeToTheBookQueue(int bookId) {
         boolean bookFree = this.bookService.bookFree(bookId);
         boolean hasUserBookWithId = this.bookService.hasUserBookWithId(this.randomUserId, bookId);
         boolean userInBookQueue =  this.bookBorrowingService.isUserInBookQueue(this.randomUserId, bookId);
@@ -182,7 +182,7 @@ public class BorrowingSimulator implements CommandLineRunner {
         || (bookFree && maxBooksReached && !userInBookQueue);
     }
 
-    public void setUserAndBook() {
+    private void setUserAndBook() {
         this.randomBook = bookRepository.findById(randomBookId);
         this.randomUser = userRepository.findById(randomUserId);
     }
