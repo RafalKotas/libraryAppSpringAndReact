@@ -27,6 +27,8 @@ public class BorrowingSimulator implements CommandLineRunner {
 
     int BORROWING_IN_APP_REQUIRED = 300;
 
+    int MAX_AVAILABLE_BOOK_ON_HANDS = 3;
+
     @Autowired
     UserRepository userRepository;
 
@@ -96,16 +98,16 @@ public class BorrowingSimulator implements CommandLineRunner {
         List<BookBorrowing> userBooksOnHands = this.bookBorrowingRepository.userActualBorrowings(this.randomUserId);
 
         //0 - borrow
-        if(userBooksOnHands.size() < 3 && this.bookRepository.getAllAvailableWithoutParams().size() > 0) {
+        if(userBooksOnHands.size() < MAX_AVAILABLE_BOOK_ON_HANDS && !this.bookRepository.getAllAvailableWithoutParams().isEmpty()) {
 
             this.generateFreeBooksIds();
-            if(this.freeBooksIds.size() > 0) {
+            if(!this.freeBooksIds.isEmpty()) {
                 this.possibleActions.add("BORROW");
             }
         }
 
         //1 - return
-        if(userBooksOnHands.size() > 0) {
+        if(!userBooksOnHands.isEmpty()) {
             this.generateBooksToReturnIds();
             this.possibleActions.add("RETURN");
         }
@@ -113,7 +115,7 @@ public class BorrowingSimulator implements CommandLineRunner {
         //2 - sign in for a queue
         //generate Book for which user can sign in for a queue
         this.generateBooksIdsForWhichTheUserCanSubscribeToTheQueue();
-        if(this.booksIdsForWhichTheUserCanSubscribeToTheQueue.size() > 0) {
+        if(!this.booksIdsForWhichTheUserCanSubscribeToTheQueue.isEmpty()) {
             this.possibleActions.add("SUBSCRIBE TO THE QUEUE");
         }
 
