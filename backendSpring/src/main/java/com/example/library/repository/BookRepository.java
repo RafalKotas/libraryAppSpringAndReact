@@ -44,10 +44,12 @@ public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecifi
                                @Param("yearPublishedMaximum") Integer yearPublishedMaximum,
                                Pageable pageable);
 
-    @Query(value = "SELECT *" +
-            " FROM books b LEFT JOIN book_borrowing r ON b.id = r.book_id" +
-            " GROUP BY b.id" +
-            " HAVING COUNT(r.borrowing_date) = COUNT(r.return_date)",
+    @Query(value = "SELECT b.id, b.author, b.title, b.genre, b.year_published, b.description\n" +
+            "FROM books b\n" +
+            "LEFT JOIN book_borrowing bb ON b.id = bb.book_id\n" +
+            "GROUP BY b.id, b.author, b.title, b.genre, b.year_published\n" +
+            "HAVING COUNT(bb.borrowing_date) = COUNT(bb.return_date) \n" +
+            "   OR COUNT(bb.borrowing_date) IS NULL",
             nativeQuery = true)
     List<Book> getAllAvailableWithoutParams();
 
@@ -79,12 +81,12 @@ public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecifi
             "AND b.year_published BETWEEN :yearPublishedMinimum AND :yearPublishedMaximum",
             nativeQuery = true)
     Page<Book> getAllBooks(@Param("title") String title,
-                              @Param("author") String author,
-                              @Param("description") String description,
-                              @Param("genre") String genre,
-                              @Param("yearPublishedMinimum") Integer yearPublishedMinimum,
-                              @Param("yearPublishedMaximum") Integer yearPublishedMaximum,
-                              Pageable pageable);
+                           @Param("author") String author,
+                           @Param("description") String description,
+                           @Param("genre") String genre,
+                           @Param("yearPublishedMinimum") Integer yearPublishedMinimum,
+                           @Param("yearPublishedMaximum") Integer yearPublishedMaximum,
+                           Pageable pageable);
 
     @Query(value = "SELECT * FROM books b " +
             "WHERE b.genre LIKE %:genre% " +
@@ -100,9 +102,9 @@ public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecifi
                                              @Param("yearPublished") Integer yearPublished);
 
     boolean existsBookByTitleAndAuthorAndDescriptionAndGenreAndYearPublished(String title,
-                                                                         String author,
-                                                                         String description,
-                                                                         String genre,
-                                                                         Integer yearPublished);
+                                                                             String author,
+                                                                             String description,
+                                                                             String genre,
+                                                                             Integer yearPublished);
 
 }
