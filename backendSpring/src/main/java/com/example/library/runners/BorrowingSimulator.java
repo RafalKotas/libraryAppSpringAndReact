@@ -44,7 +44,7 @@ public class BorrowingSimulator implements CommandLineRunner {
 
 
 
-    private final DateTime startDate = new DateTime("2018-01-01T12:00:00");
+    private final DateTime startDate = new DateTime("2020-10-01T12:00:00");
     private final DateTime endDate = new DateTime("2021-01-01T12:00:00");
 
     private List<Long> userIds;
@@ -212,7 +212,7 @@ public class BorrowingSimulator implements CommandLineRunner {
 
                     if(this.randomUser.isPresent() && this.randomBook.isPresent()) {
                         if (print_info) {
-                            log.info("Book no {} taken by user no {} on {}", this.randomBookId, this.randomUserId, activeDate);
+                            log.info("({}) Book no {} taken by user no {} on {}", borrowingsNo, this.randomBookId, this.randomUserId, activeDate);
                         };
                         bookBorrowingRepository.save(new BookBorrowing(this.randomUser.get(), this.randomBook.get(), activeDate.toDate(), activeDate.toDate()));
                     }
@@ -233,7 +233,7 @@ public class BorrowingSimulator implements CommandLineRunner {
                         requestWithBookToGive.setBorrowingDate(activeDate.toDate());
                         bookBorrowingRepository.save(requestWithBookToGive);
                         if (print_info) {
-                            log.info("Book no {} taken by user no {} on {} (in queue before)");
+                            log.info("({}) Book no {} given to user no {} on {} (in queue before)", borrowingsNo, borrowingsNo, this.randomBookId, this.randomUserId, activeDate);
                         };
                     }
                 }
@@ -251,7 +251,7 @@ public class BorrowingSimulator implements CommandLineRunner {
                     borrowingWithReturningBook.get().setReturnDate(activeDate.toDate());
                     this.bookBorrowingRepository.save(borrowingWithReturningBook.get());
                     if (print_info) {
-                        log.info("User no {} returned book no {} on {}", this.randomUserId, this.randomBookId, activeDate);
+                        log.info("({}) User no {} returned book no {} on {}", borrowingsNo, this.randomUserId, this.randomBookId, activeDate);
                     };
                 }
                 break;
@@ -265,12 +265,12 @@ public class BorrowingSimulator implements CommandLineRunner {
                 this.bookBorrowingRepository.save(
                         new BookBorrowing(randomUser.get(), randomBook.get(), activeDate.toDate(), null));
                 if (print_info) {
-                    log.info("User no {} subscribed for queue book no {} on {}", this.randomUserId, this.randomBookId, activeDate);
+                    log.info("({}) User no {} subscribed for queue book no {} on {}", borrowingsNo, this.randomUserId, this.randomBookId, activeDate);
                 };
                 break;
             case ("SKIP"):
                 if (print_info) {
-                    log.info("User no {} , move skipped on {}", this.randomUserId, activeDate);
+                    log.info("({}) User no {} , move skipped on {}", borrowingsNo, this.randomUserId, activeDate);
                 };
                 break;
             default:
@@ -290,15 +290,12 @@ public class BorrowingSimulator implements CommandLineRunner {
 
             this.userIds = this.generateUsersIds();
 
-            int iteration = 0;
-
             while(activeDate.isBefore(endDate)) {
                 this.setRandomUserNumber();
                 this.generatePossibleActions();
 
                 this.mainSection(activeDate);
                 activeDate = activeDate.plusDays(1);
-                iteration++;
             }
         } else {
             System.out.println("Borrowings Generated earlier (more than " + BORROWING_IN_APP_REQUIRED + ") .");
