@@ -1,6 +1,5 @@
 package com.example.library.model;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,11 +13,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
-@Data
+@Setter
+@ToString
 @NoArgsConstructor
 @Table(name = "users",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = "email")
+                @UniqueConstraint(columnNames = "email")
         })
 public class User {
     @Id
@@ -65,5 +65,33 @@ public class User {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
     }
 }

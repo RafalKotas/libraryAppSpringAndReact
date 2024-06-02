@@ -1,6 +1,5 @@
 package com.example.library.model;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,15 +9,15 @@ import javax.persistence.*;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Entity
-@Data
 @Table(name = "books")
 @StaticMetamodel(Book.class)
+@ToString
 @NoArgsConstructor
+@Setter
 public class Book {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column
     private int id;
 
     @OneToMany(mappedBy = "book")
@@ -45,5 +44,28 @@ public class Book {
         this.yearPublished = yearPublished;
         this.description = description;
         this.genre = genre;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public int getYearPublished() {
+        return yearPublished;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public String getGenre() {
+        return genre;
     }
 }
