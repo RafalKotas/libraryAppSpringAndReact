@@ -14,9 +14,12 @@ public class TestRunner implements CommandLineRunner {
     BookBorrowingService bookBorrowingService;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         double meanDelayOfReturnSimpleBook = bookBorrowingService.meanDaysOfReturnDelaySingleBook(2L, 40);
+        System.out.println(meanDelayOfReturnSimpleBook);
+
         double meanDelayOfReturnAllBooks = bookBorrowingService.meanDaysOfReturnDelayAllBooks(2L);
+        System.out.println(meanDelayOfReturnAllBooks);
 
         double meanDaysOfSingleBookPossession = bookBorrowingService.meanDaysOfSingleBookPossession(2L, 44);
         System.out.println(meanDaysOfSingleBookPossession);

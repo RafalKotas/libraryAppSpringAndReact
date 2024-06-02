@@ -113,18 +113,15 @@ public class AuthController {
                     .orElseThrow( () -> new RuntimeException("Error: Role is not found.") );
             roles.add(userRole);
         } else {
-                switch (RequestRole.toLowerCase()) {
-                    case "librarian":
-                        Role librarianRole = roleRepository.findByName(ERole.ROLE_LIBRARIAN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(librarianRole);
-
-                        break;
-                    default:
-                        Role readerRole = roleRepository.findByName(ERole.ROLE_READER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(readerRole);
-                }
+            if (RequestRole.equalsIgnoreCase("librarian")) {
+                Role librarianRole = roleRepository.findByName(ERole.ROLE_LIBRARIAN)
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                roles.add(librarianRole);
+            } else {
+                Role readerRole = roleRepository.findByName(ERole.ROLE_READER)
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                roles.add(readerRole);
+            }
         }
 
         user.setRoles(roles);

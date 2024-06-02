@@ -34,7 +34,7 @@ public class UsersInitializator implements CommandLineRunner {
     PasswordEncoder encoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         System.out.println("Users init(2)");
 

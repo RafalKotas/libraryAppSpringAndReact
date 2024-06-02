@@ -82,7 +82,7 @@ public class UserController {
 
     @GetMapping("/user/existByEmail/{userEmail}")
     public Boolean getUserByEmail(@PathVariable("userEmail") String userEmail) {
-        return userRepository.existsByEmail(userEmail) ? true : false;
+        return userRepository.existsByEmail(userEmail);
     }
 
     @GetMapping("/user/{userId}")

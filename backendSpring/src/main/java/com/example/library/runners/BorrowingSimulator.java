@@ -25,9 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class BorrowingSimulator implements CommandLineRunner {
 
-    int BORROWING_IN_APP_REQUIRED = 300;
+    private final int BORROWING_IN_APP_REQUIRED = 300;
 
-    int MAX_AVAILABLE_BOOK_ON_HANDS = 3;
+    private final int MAX_AVAILABLE_BOOK_ON_HANDS = 3;
 
     @Autowired
     UserRepository userRepository;
@@ -77,9 +77,8 @@ public class BorrowingSimulator implements CommandLineRunner {
 
     private List<Long> generateUsersIds() {
         List<User> allUsers = this.userRepository.findAll();
-        List<Long> ids = allUsers.stream().map(User::getId).collect(Collectors.toList());
 
-        return ids;
+        return allUsers.stream().map(User::getId).collect(Collectors.toList());
     }
 
     private void setRandomUserNumber() {
@@ -215,7 +214,7 @@ public class BorrowingSimulator implements CommandLineRunner {
                     if(this.randomUser.isPresent() && this.randomBook.isPresent()) {
                         if (print_info) {
                             log.info("({}) Book no {} taken by user no {} on {}", borrowingsNo, this.randomBookId, this.randomUserId, activeDate);
-                        };
+                        }
                         bookBorrowingRepository.save(new BookBorrowing(this.randomUser.get(), this.randomBook.get(), activeDate.toDate(), activeDate.toDate()));
                     }
 
@@ -236,7 +235,7 @@ public class BorrowingSimulator implements CommandLineRunner {
                         bookBorrowingRepository.save(requestWithBookToGive);
                         if (print_info) {
                             log.info("({}) Book no {} given to user no {} on {} (in queue before)", borrowingsNo, borrowingsNo, this.randomBookId, this.randomUserId, activeDate);
-                        };
+                        }
                     }
                 }
                 break;
@@ -254,7 +253,7 @@ public class BorrowingSimulator implements CommandLineRunner {
                     this.bookBorrowingRepository.save(borrowingWithReturningBook.get());
                     if (print_info) {
                         log.info("({}) User no {} returned book no {} on {}", borrowingsNo, this.randomUserId, this.randomBookId, activeDate);
-                    };
+                    }
                 }
                 break;
             case ("SUBSCRIBE TO THE QUEUE"):
@@ -268,12 +267,12 @@ public class BorrowingSimulator implements CommandLineRunner {
                         new BookBorrowing(randomUser.get(), randomBook.get(), activeDate.toDate(), null));
                 if (print_info) {
                     log.info("({}) User no {} subscribed for queue book no {} on {}", borrowingsNo, this.randomUserId, this.randomBookId, activeDate);
-                };
+                }
                 break;
             case ("SKIP"):
                 if (print_info) {
                     log.info("({}) User no {} , move skipped on {}", borrowingsNo, this.randomUserId, activeDate);
-                };
+                }
                 break;
             default:
                 break;
