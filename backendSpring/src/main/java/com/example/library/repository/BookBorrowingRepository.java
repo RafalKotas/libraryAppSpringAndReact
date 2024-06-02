@@ -1,17 +1,15 @@
 package com.example.library.repository;
 
-import com.example.library.model.Book;
 import com.example.library.model.BookBorrowing;
 import com.example.library.model.BookBorrowingKey;
 import com.example.library.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface BookBorrowingRepository extends JpaRepository<BookBorrowing, BookBorrowingKey>, JpaSpecificationExecutor<BookBorrowing> {

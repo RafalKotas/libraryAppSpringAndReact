@@ -33,7 +33,7 @@ public class BookBorrowingService {
     public boolean isUserInBookQueue(Long userId, int bookId) {
         Optional<BookBorrowing> userInQueueEntry = bookBorrowingRepository.userInBookQueue(userId, bookId);
 
-        return userInQueueEntry.isPresent() ? true : false;
+        return userInQueueEntry.isPresent();
     }
 
     public int userBooksOnHandsCount(Long userId) {
@@ -45,16 +45,14 @@ public class BookBorrowingService {
     public boolean maximumBooksOnHandsReached(Long userId) {
         int booksOnHands = this.userBooksOnHandsCount(userId);
 
-        return (booksOnHands == MAXIMUM_BORROWINGS) ? true : false;
+        return booksOnHands == MAXIMUM_BORROWINGS;
     }
 
     public List<BookBorrowing> getSortedByDateUserBorrowings(String dateColumn, Long userId, boolean latestOnTop) {
         BoundaryBorrowingDateValueForUserSpecification boundaryBorrowingDateValueForUserSpecification =
                 new BoundaryBorrowingDateValueForUserSpecification(dateColumn, userId, latestOnTop);
 
-        List<BookBorrowing> userBorrowingsSorted = bookBorrowingRepository.findAll(boundaryBorrowingDateValueForUserSpecification);
-
-        return userBorrowingsSorted;
+        return bookBorrowingRepository.findAll(boundaryBorrowingDateValueForUserSpecification);
     }
 
     public Page<BookBorrowing> getUserBorrowingsPage(Long userId,
@@ -82,19 +80,19 @@ public class BookBorrowingService {
             case "ON_HANDS":
                 System.out.println("info about user's book on hands");
                 UserBorrowingStatusOnHandsSpecification userBorrowingStatusOnHandsSpecification =
-                        new UserBorrowingStatusOnHandsSpecification(Long.valueOf(userId), requestDateMinValue, requestDateMaxValue,
+                        new UserBorrowingStatusOnHandsSpecification(userId, requestDateMinValue, requestDateMaxValue,
                                 borrowingDateMinValue, borrowingDateMaxValue);
                 return bookBorrowingRepository.findAll(userBorrowingStatusOnHandsSpecification,
                         userBookBorrowingsPageable);
             case "RETURNED":
                 UserBorrowingStatusReturnedSpecification userBorrowingStatusReturnedSpecification =
-                        new UserBorrowingStatusReturnedSpecification(Long.valueOf(userId), requestDateMinValue, requestDateMaxValue,
+                        new UserBorrowingStatusReturnedSpecification(userId, requestDateMinValue, requestDateMaxValue,
                                 borrowingDateMinValue, borrowingDateMaxValue, returnDateMinValue, returnDateMaxValue);
                 return bookBorrowingRepository.findAll(userBorrowingStatusReturnedSpecification,
                         userBookBorrowingsPageable);
             default:
                 UserBorrowingsStatusAllSpecification userBorrowingsStatusAllSpecification =
-                        new UserBorrowingsStatusAllSpecification(Long.valueOf(userId), requestDateMinValue, requestDateMaxValue,
+                        new UserBorrowingsStatusAllSpecification(userId, requestDateMinValue, requestDateMaxValue,
                                 borrowingDateMinValue, borrowingDateMaxValue, returnDateMinValue, returnDateMaxValue);
                 return bookBorrowingRepository.findAll(userBorrowingsStatusAllSpecification,
                         userBookBorrowingsPageable);
@@ -127,14 +125,11 @@ public class BookBorrowingService {
 
                 Days datesDayDiff = Days.daysBetween(borrowingDate, returnDate);
 
-                singleBookDaysDelay = datesDayDiff.getDays() > POSSESSION_DAYS_ACCEPTED
-                        ? datesDayDiff.getDays() - POSSESSION_DAYS_ACCEPTED : 0;
+                singleBookDaysDelay = Math.max(datesDayDiff.getDays() - POSSESSION_DAYS_ACCEPTED, 0);
                 delayDaysSum += singleBookDaysDelay;
-
-                //System.out.println(datesDayDiff.getDays());
             }
 
-            meanDaysOfReturnDelay = (delayDaysSum * 1.0) / borrowingsCount;
+            meanDaysOfReturnDelay = (double) delayDaysSum / borrowingsCount;
         }
 
         System.out.println("mean single book (" + bookId + ") delay: " + meanDaysOfReturnDelay + ".");
@@ -173,7 +168,7 @@ public class BookBorrowingService {
                 }
             }
 
-            meanDaysOfPossessionSingleBook = (singleBookPossessionTimeTotal * 1.0) / borrowingsCount;
+            meanDaysOfPossessionSingleBook = (double) singleBookPossessionTimeTotal / borrowingsCount;
         }
 
         System.out.println("Mean days of possession, book(" + bookId + ") user(" + userId + ") : " + meanDaysOfPossessionSingleBook);
@@ -181,24 +176,34 @@ public class BookBorrowingService {
         return meanDaysOfPossessionSingleBook;
     }
 
+    /***
+     * @param userId - user unique Id
+     * @param bookId - book unique Id
+     * @return max time of book possession in days
+     */
     public int maxDaysOfSingleBookPossession(long userId, int bookId) {
         List<BookBorrowing> userSingleBookBorrowings =
                 bookBorrowingRepository.userBorrowingsOnHandsOrReturnedBookIdSpecified(userId, bookId);
 
         int maxDays = 0;
+        Date borrowingDate;
+        String borrowingDateString;
+        DateTime borrowingDateParsed;
+        Date returnDate;
+        String returnDateString;
+        DateTime returnDateParsed;
+        Days datesDayDiff;
 
         for (BookBorrowing bb: userSingleBookBorrowings) {
-            Date borrowingDate = bb.getBorrowingDate();
+            borrowingDate = bb.getBorrowingDate();
+            borrowingDateString = borrowingDate.toString().substring(0, 10);
+            borrowingDateParsed = DateTime.parse(borrowingDateString);
 
-            String borrowingDateString = bb.getBorrowingDate().toString().substring(0, 10);
-            DateTime borrowingDateParsed = DateTime.parse(borrowingDateString);
+            returnDate = bb.getReturnDate();
+            returnDateString = returnDate == null ? DateTime.now().toString() : returnDate.toString().substring(0, 10);
+            returnDateParsed = DateTime.parse(returnDateString);
 
-            Date returnDate = bb.getReturnDate();
-            String returnDateString = returnDate == null ? DateTime.now().toString()
-                    : returnDate.toString().substring(0, 10);
-            DateTime returnDateParsed = DateTime.parse(returnDateString);
-
-            Days datesDayDiff = Days.daysBetween(borrowingDateParsed, returnDateParsed);
+            datesDayDiff = Days.daysBetween(borrowingDateParsed, returnDateParsed);
 
             maxDays = Math.max(datesDayDiff.getDays(), maxDays);
         }
@@ -227,18 +232,23 @@ public class BookBorrowingService {
 
         double meanDaysOfReturnDelay = 0;
 
+        String borrowingDateString;
+        DateTime borrowingDate;
+        String returnDateString;
+        DateTime returnDate;
+        Days datesDayDiff;
+
         if(borrowingsCount > 0) {
             for (BookBorrowing bb: userSingleBookBorrowings) {
-                String borrowingDateString = bb.getBorrowingDate().toString().substring(0, 10);
-                DateTime borrowingDate = DateTime.parse(borrowingDateString);
+                borrowingDateString = bb.getBorrowingDate().toString().substring(0, 10);
+                borrowingDate = DateTime.parse(borrowingDateString);
 
-                String returnDateString = bb.getReturnDate().toString().substring(0, 10);
-                DateTime returnDate = DateTime.parse(returnDateString);
+                returnDateString = bb.getReturnDate().toString().substring(0, 10);
+                returnDate = DateTime.parse(returnDateString);
 
-                Days datesDayDiff = Days.daysBetween(borrowingDate, returnDate);
+                datesDayDiff = Days.daysBetween(borrowingDate, returnDate);
 
-                singleBookDaysDelay = datesDayDiff.getDays() > POSSESSION_DAYS_ACCEPTED
-                        ? datesDayDiff.getDays() - POSSESSION_DAYS_ACCEPTED : 0;
+                singleBookDaysDelay = Math.max(datesDayDiff.getDays() - POSSESSION_DAYS_ACCEPTED, 0);
                 delayDaysSum += singleBookDaysDelay;
             }
 
@@ -252,33 +262,43 @@ public class BookBorrowingService {
         List<BookBorrowing> userBooksBorrowings =
                 bookBorrowingRepository.userBorrowingsOnHandsOrReturned(userId);
 
-        int BooksDaysOfPossessionAtOnePeriod;
-        int BooksDaysOfPossessionTimeTotal = 0;
+        int booksDaysOfPossessionAtOnePeriod;
+        int booksDaysOfPossessionTimeTotal = 0;
 
         int borrowingsCount = userBooksBorrowings.size();
 
         double meanDaysOfBooksPossession = 0;
 
+        Date borrowingDate;
+        String borrowingDateString;
+        DateTime borrowingDateParsed;
+
+        Date returnDate;
+        String returnDateString;
+        DateTime returnDateParsed;
+
+        Days datesDayDiff;
+
         if(borrowingsCount > 0) {
             for (BookBorrowing bb: userBooksBorrowings) {
-                Date borrowingDate = bb.getBorrowingDate();
+                borrowingDate = bb.getBorrowingDate();
                 if(borrowingDate != null) {
-                    String borrowingDateString = bb.getBorrowingDate().toString().substring(0, 10);
-                    DateTime borrowingDateParsed = DateTime.parse(borrowingDateString);
+                    borrowingDateString = bb.getBorrowingDate().toString().substring(0, 10);
+                    borrowingDateParsed = DateTime.parse(borrowingDateString);
 
-                    Date returnDate = bb.getReturnDate();
-                    String returnDateString = returnDate == null ? DateTime.now().toString()
+                    returnDate = bb.getReturnDate();
+                    returnDateString = returnDate == null ? DateTime.now().toString()
                             : returnDate.toString().substring(0, 10);
-                    DateTime returnDateParsed = DateTime.parse(returnDateString);
+                    returnDateParsed = DateTime.parse(returnDateString);
 
-                    Days datesDayDiff = Days.daysBetween(borrowingDateParsed, returnDateParsed);
+                    datesDayDiff = Days.daysBetween(borrowingDateParsed, returnDateParsed);
 
-                    BooksDaysOfPossessionAtOnePeriod = datesDayDiff.getDays();
-                    BooksDaysOfPossessionTimeTotal += BooksDaysOfPossessionAtOnePeriod;
+                    booksDaysOfPossessionAtOnePeriod = datesDayDiff.getDays();
+                    booksDaysOfPossessionTimeTotal += booksDaysOfPossessionAtOnePeriod;
                 }
             }
 
-            meanDaysOfBooksPossession = (BooksDaysOfPossessionTimeTotal * 1.0) / borrowingsCount;
+            meanDaysOfBooksPossession = (booksDaysOfPossessionTimeTotal * 1.0) / borrowingsCount;
         }
 
         System.out.println("Mean days of possession, user(" + userId + ") : " + meanDaysOfBooksPossession);
@@ -292,18 +312,28 @@ public class BookBorrowingService {
 
         int maxDays = 0;
 
+        Date borrowingDate;
+        String borrowingDateString;
+        DateTime borrowingDateParsed;
+
+        Date returnDate;
+        String returnDateString;
+        DateTime returnDateParsed;
+
+        Days datesDayDiff;
+
         for (BookBorrowing bb: userBooksBorrowings) {
-            Date borrowingDate = bb.getBorrowingDate();
+            borrowingDate = bb.getBorrowingDate();
 
-            String borrowingDateString = bb.getBorrowingDate().toString().substring(0, 10);
-            DateTime borrowingDateParsed = DateTime.parse(borrowingDateString);
+            borrowingDateString = borrowingDate.toString().substring(0, 10);
+            borrowingDateParsed = DateTime.parse(borrowingDateString);
 
-            Date returnDate = bb.getReturnDate();
-            String returnDateString = returnDate == null ? DateTime.now().toString()
+            returnDate = bb.getReturnDate();
+            returnDateString = returnDate == null ? DateTime.now().toString()
                         : returnDate.toString().substring(0, 10);
-            DateTime returnDateParsed = DateTime.parse(returnDateString);
+            returnDateParsed = DateTime.parse(returnDateString);
 
-            Days datesDayDiff = Days.daysBetween(borrowingDateParsed, returnDateParsed);
+            datesDayDiff = Days.daysBetween(borrowingDateParsed, returnDateParsed);
 
             maxDays = Math.max(datesDayDiff.getDays(), maxDays);
         }

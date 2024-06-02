@@ -1,16 +1,13 @@
 package com.example.library.model;
 
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 @Embeddable
-@Setter
-@ToString
 @NoArgsConstructor
 public class BookBorrowingKey implements Serializable {
 
@@ -27,18 +24,6 @@ public class BookBorrowingKey implements Serializable {
         this.userId = userId;
         this.bookId = bookId;
         this.requestDate = requestDate;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public Date getRequestDate() {
-        return requestDate;
     }
 
     @Override

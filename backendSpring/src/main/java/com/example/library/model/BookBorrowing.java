@@ -1,5 +1,6 @@
 package com.example.library.model;
 
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,11 +10,10 @@ import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Date;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "book_borrowing")
 @StaticMetamodel(BookBorrowing.class)
-@Setter
-@ToString
-@NoArgsConstructor
 public class BookBorrowing {
 
     @EmbeddedId
@@ -36,26 +36,6 @@ public class BookBorrowing {
 
     //@Version
     //private Long version;
-
-    public BookBorrowingKey getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public Date getBorrowingDate() {
-        return borrowingDate;
-    }
-
-    public Date getReturnDate() {
-        return returnDate;
-    }
 
     public BookBorrowing(User user, Book book, Date requestDate, Date borrowingDate) {
         this.user = user;

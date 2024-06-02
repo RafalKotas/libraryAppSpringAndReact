@@ -1,7 +1,5 @@
 package com.example.library.controllers;
 
-import java.util.*;
-
 import com.example.library.model.Book;
 import com.example.library.model.BookBorrowing;
 import com.example.library.model.RequestBodyObjects.PaginationParams;
@@ -26,7 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.joda.time.DateTime;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -86,7 +84,7 @@ public class BookBorrowingController {
             if(pageBookBorrowings.getTotalElements() > 0) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                if(bookBorrowingRepository.findByIdUserId(userId).size() > 0) {
+                if(!bookBorrowingRepository.findByIdUserId(userId).isEmpty()) {
                     return ResponseEntity
                             .ok()
                             .body(new MessageResponse("No borrowings with specified filters."));
@@ -116,12 +114,12 @@ public class BookBorrowingController {
     }
 
     @GetMapping("/earliestUserDate")
-    public ResponseEntity<Date>earliestUserDate(@RequestParam(name = "userId") Long userId,
+    public ResponseEntity<Date> earliestUserDate(@RequestParam(name = "userId") Long userId,
                                      @RequestParam(name = "dateType", defaultValue = "") String dateType) {
 
         List<BookBorrowing> userBorrowingsSortedAsc = bookBorrowingService.getSortedByDateUserBorrowings(dateType, userId, false);
 
-        if (userBorrowingsSortedAsc.size() > 0) {
+        if (!userBorrowingsSortedAsc.isEmpty()) {
             switch(dateType) {
                 case "requestDate":
                     return new ResponseEntity<>(userBorrowingsSortedAsc.get(0).getId().getRequestDate(), HttpStatus.OK);
@@ -138,11 +136,11 @@ public class BookBorrowingController {
     }
 
     @GetMapping("/latestUserDate")
-    public ResponseEntity<Date>latestUserDate(@RequestParam(name = "userId") Long userId,
+    public ResponseEntity<Date> latestUserDate(@RequestParam(name = "userId") Long userId,
                                 @RequestParam(name = "dateType") String dateType) {
         List<BookBorrowing> userBorrowingsSortedDesc = bookBorrowingService.getSortedByDateUserBorrowings(dateType, userId, true);
 
-        if (userBorrowingsSortedDesc.size() > 0) {
+        if (!userBorrowingsSortedDesc.isEmpty()) {
             switch(dateType) {
                 case "requestDate":
                     return new ResponseEntity<>(userBorrowingsSortedDesc.get(0).getId().getRequestDate(), HttpStatus.OK);
@@ -225,8 +223,6 @@ public class BookBorrowingController {
 
         return new ResponseEntity<>(usersInQueue, HttpStatus.OK);
     }
-
-
 
     @GetMapping("/borrowings/usersInQueue/length")
     public int getBookQueueLength(@RequestParam("bookId") int bookId)

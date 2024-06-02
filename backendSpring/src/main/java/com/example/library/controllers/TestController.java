@@ -46,7 +46,7 @@ public class TestController {
             if(possibleActiveToken.isPresent()) {
                 List<BookBorrowing> readerBorrowings = bookBorrowingRepository.findByUser(reader.get());
 
-                if(readerBorrowings.size() > 0) {
+                if(!readerBorrowings.isEmpty()) {
                     return new ResponseEntity<>(readerBorrowings, HttpStatus.OK);
                 } else {
                     System.out.println("No borrowings at the moment.");
