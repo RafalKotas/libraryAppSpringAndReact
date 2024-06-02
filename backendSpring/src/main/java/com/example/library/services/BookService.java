@@ -29,23 +29,15 @@ public class BookService {
     }
 
     public List<String> getAllBookGenres() {
-        List<Book> booksDistinctGenres = bookRepository.getAllGenres();
 
-        List<String> genres = new ArrayList<>();
-
-        for (Book book : booksDistinctGenres) {
-            genres.add(book.getGenre());
-        }
-
-        return genres;
+        return bookRepository.getAllGenres();
     }
 
     public boolean bookFree(int bookId) {
         try {
             Optional<BookBorrowing> potentialBorrowed = bookBorrowingRepository.findborrowedBook(bookId);
-            return potentialBorrowed.isPresent() ? false : true;
+            return potentialBorrowed.isEmpty();
         } catch (Exception e) {
-            System.out.println(e);
             return false;
         }
     }
@@ -58,9 +50,9 @@ public class BookService {
             BookBorrowing borrowingForSpecification = new BookBorrowing(user.get(), book.get(), new Date(), new Date());
 
             BookOwnedByUser spec = new BookOwnedByUser(borrowingForSpecification);
-            Optional userBorrowingWithBookId = bookBorrowingRepository.findOne(spec);
+            Optional<BookBorrowing> userBorrowingWithBookId = bookBorrowingRepository.findOne(spec);
 
-            return userBorrowingWithBookId.isPresent() ? true : false;
+            return userBorrowingWithBookId.isPresent();
         } else {
             return false;
         }
