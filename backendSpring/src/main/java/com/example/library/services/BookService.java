@@ -29,7 +29,6 @@ public class BookService {
     }
 
     public List<String> getAllBookGenres() {
-
         return bookRepository.getAllGenres();
     }
 
