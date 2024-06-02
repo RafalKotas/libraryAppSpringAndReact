@@ -29,15 +29,7 @@ public class BookService {
     }
 
     public List<String> getAllBookGenres() {
-        List<Book> booksDistinctGenres = bookRepository.getAllGenres();
-
-        List<String> genres = new ArrayList<>();
-
-        for (Book book : booksDistinctGenres) {
-            genres.add(book.getGenre());
-        }
-
-        return genres;
+        return bookRepository.getAllGenres();
     }
 
     public boolean bookFree(int bookId) {
