@@ -1,14 +1,16 @@
 package com.example.library.payload.request;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Set;
-
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Setter
 @ToString
+@Getter
 public class SignupRequest {
 
     @NotBlank
@@ -33,29 +35,4 @@ public class SignupRequest {
     @NotBlank
     @Size(min = 3, max = 40)
     private String lastName;
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getRole() {
-        return this.role;
-    }
 }
