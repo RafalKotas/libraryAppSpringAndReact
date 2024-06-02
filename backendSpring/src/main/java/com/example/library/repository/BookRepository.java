@@ -19,11 +19,11 @@ public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecifi
 
     Optional<Book> findById(Integer Id);
 
-    @Query(value = "SELECT *" +
-            " FROM books" +
+    @Query(value = "SELECT b.genre" +
+            " FROM books b" +
             " GROUP BY genre",
             nativeQuery = true)
-    List<Book> getAllGenres();
+    List<String> getAllGenres();
 
     // all available - page
     @Query(value = "SELECT *" +
