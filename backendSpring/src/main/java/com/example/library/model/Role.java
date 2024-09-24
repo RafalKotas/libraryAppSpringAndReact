@@ -1,5 +1,6 @@
 package com.example.library.model;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "roles")
 @Setter
+@Getter
 @ToString
 @NoArgsConstructor
 public class Role {
@@ -22,13 +24,5 @@ public class Role {
 
     public Role(ERole name) {
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public ERole getName() {
-        return name;
     }
 }

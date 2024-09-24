@@ -1,5 +1,6 @@
 package com.example.library.model;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @ToString
 @NoArgsConstructor
 @Setter
+@Getter
 public class Book {
 
     @Id
@@ -44,28 +46,5 @@ public class Book {
         this.yearPublished = yearPublished;
         this.description = description;
         this.genre = genre;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public int getYearPublished() {
-        return yearPublished;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    public String getGenre() {
-        return genre;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.library.model;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Setter
 @ToString
 @NoArgsConstructor
+@Getter
 public class BookBorrowing {
 
     @EmbeddedId
@@ -33,29 +35,6 @@ public class BookBorrowing {
     Date borrowingDate;
 
     Date returnDate;
-
-    //@Version
-    //private Long version;
-
-    public BookBorrowingKey getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public Date getBorrowingDate() {
-        return borrowingDate;
-    }
-
-    public Date getReturnDate() {
-        return returnDate;
-    }
 
     public BookBorrowing(User user, Book book, Date requestDate, Date borrowingDate) {
         this.user = user;
