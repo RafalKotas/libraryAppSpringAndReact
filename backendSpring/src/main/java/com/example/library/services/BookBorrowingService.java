@@ -10,22 +10,25 @@ import com.example.library.specifications.UserBorrowingsSpecification.UserBorrow
 import com.example.library.specifications.UserBorrowingsSpecification.UserBorrowingsStatusAllSpecification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.library.services.BookServiceConstants.MAXIMUM_BORROWINGS;
+import static com.example.library.services.BookServiceConstants.POSSESSION_DAYS_ACCEPTED;
+
+@Slf4j
 @Service
 public class BookBorrowingService {
-
-    private final int MAXIMUM_BORROWINGS = 3;
-    private final int POSSESSION_DAYS_ACCEPTED = 30;
 
     @Autowired
     BookBorrowingRepository bookBorrowingRepository;
@@ -70,33 +73,33 @@ public class BookBorrowingService {
         Date returnDateMinValue = DateTime.parse(dateBoundaryValues1.getReturnDateMinValue()).toDate();
         Date returnDateMaxValue = DateTime.parse(dateBoundaryValues1.getReturnDateMaxValue()).plusDays(1).toDate();
 
-        switch(status) {
-            case "IN_QUEUE":
-                System.out.println("GET BORROWINGS IN QUEUE");
-                UserBorrowingStatusInQueueSpecification userBorrowingStatusInQueueSpecification =
-                        new UserBorrowingStatusInQueueSpecification(Long.valueOf(userId), requestDateMinValue, requestDateMaxValue);
-                return bookBorrowingRepository.findAll(userBorrowingStatusInQueueSpecification,
-                        userBookBorrowingsPageable);
-            case "ON_HANDS":
-                System.out.println("info about user's book on hands");
-                UserBorrowingStatusOnHandsSpecification userBorrowingStatusOnHandsSpecification =
-                        new UserBorrowingStatusOnHandsSpecification(userId, requestDateMinValue, requestDateMaxValue,
+        BookStatus selectedBookStatus = BookStatus.valueOf(status);
+
+        Specification<BookBorrowing> borrowingSpecification;
+
+        switch(selectedBookStatus) {
+            case IN_QUEUE:
+                log.info("Get queued books for user {}", userId);
+                borrowingSpecification = new UserBorrowingStatusInQueueSpecification(userId, requestDateMinValue, requestDateMaxValue);
+                break;
+            case ON_HANDS:
+                log.info("Get actually borrowed books for user {}", userId);
+                borrowingSpecification = new UserBorrowingStatusOnHandsSpecification(userId, requestDateMinValue, requestDateMaxValue,
                                 borrowingDateMinValue, borrowingDateMaxValue);
-                return bookBorrowingRepository.findAll(userBorrowingStatusOnHandsSpecification,
-                        userBookBorrowingsPageable);
-            case "RETURNED":
-                UserBorrowingStatusReturnedSpecification userBorrowingStatusReturnedSpecification =
-                        new UserBorrowingStatusReturnedSpecification(userId, requestDateMinValue, requestDateMaxValue,
+                break;
+            case RETURNED:
+                log.info("Get returned books for user {}", userId);
+                borrowingSpecification = new UserBorrowingStatusReturnedSpecification(userId, requestDateMinValue, requestDateMaxValue,
                                 borrowingDateMinValue, borrowingDateMaxValue, returnDateMinValue, returnDateMaxValue);
-                return bookBorrowingRepository.findAll(userBorrowingStatusReturnedSpecification,
-                        userBookBorrowingsPageable);
+                break;
             default:
-                UserBorrowingsStatusAllSpecification userBorrowingsStatusAllSpecification =
+                borrowingSpecification =
                         new UserBorrowingsStatusAllSpecification(userId, requestDateMinValue, requestDateMaxValue,
                                 borrowingDateMinValue, borrowingDateMaxValue, returnDateMinValue, returnDateMaxValue);
-                return bookBorrowingRepository.findAll(userBorrowingsStatusAllSpecification,
-                        userBookBorrowingsPageable);
         }
+
+        return bookBorrowingRepository.findAll(borrowingSpecification,
+                userBookBorrowingsPageable);
     }
 
     // Single books statistics - BEGIN
@@ -107,7 +110,7 @@ public class BookBorrowingService {
 
         int borrowingsCount = userSingleBookBorrowings.size();
 
-        System.out.println("books (" + bookId + ") borrowed: " + borrowingsCount + " times by user(" + userId + ").");
+        log.info("book ({}) borrowed: {} times by user({}).", bookId, borrowingsCount, userId);
 
         int delayDaysSum = 0;
         int singleBookDaysDelay;
@@ -132,7 +135,7 @@ public class BookBorrowingService {
             meanDaysOfReturnDelay = (double) delayDaysSum / borrowingsCount;
         }
 
-        System.out.println("mean single book (" + bookId + ") delay: " + meanDaysOfReturnDelay + ".");
+        log.info("Book ({}) mean return after time delay: {}.", bookId, meanDaysOfReturnDelay);
 
         return meanDaysOfReturnDelay;
     }
@@ -171,7 +174,8 @@ public class BookBorrowingService {
             meanDaysOfPossessionSingleBook = (double) singleBookPossessionTimeTotal / borrowingsCount;
         }
 
-        System.out.println("Mean days of possession, book(" + bookId + ") user(" + userId + ") : " + meanDaysOfPossessionSingleBook);
+        log.info("Mean days of possession, book({}) user({}) : {}",
+                bookId, userId, meanDaysOfPossessionSingleBook);
 
         return meanDaysOfPossessionSingleBook;
     }
@@ -225,7 +229,7 @@ public class BookBorrowingService {
 
         int borrowingsCount = userSingleBookBorrowings.size();
 
-        System.out.println("Books borrowed: " + borrowingsCount + " times by user(" + userId + ").");
+        log.info("Books borrowed: {} times by user({}).", borrowingsCount, userId);
 
         int delayDaysSum = 0;
         int singleBookDaysDelay;
@@ -301,7 +305,7 @@ public class BookBorrowingService {
             meanDaysOfBooksPossession = (booksDaysOfPossessionTimeTotal * 1.0) / borrowingsCount;
         }
 
-        System.out.println("Mean days of possession, user(" + userId + ") : " + meanDaysOfBooksPossession);
+        log.info("Mean days of possession, user({}) : {}", userId, meanDaysOfBooksPossession);
 
         return meanDaysOfBooksPossession;
     }

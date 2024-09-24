@@ -12,6 +12,7 @@ import com.example.library.repository.UserRepository;
 import com.example.library.repository.UserTokenRepository;
 import com.example.library.services.BookBorrowingService;
 import com.example.library.services.BookService;
+import com.example.library.services.BookStatus;
 import com.example.library.specifications.BookBorrowingSpecifications.SelectedDateUserBorrowingsSpecification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,7 +61,7 @@ public class BookBorrowingController {
 
         Pageable userBookBorrowingsPageable;
 
-        if(status.equals("IN QUEUE") || status.equals("ALL"))
+        if(List.of(BookStatus.IN_QUEUE.name(), BookStatus.ALL.name()).contains(status))
             userBookBorrowingsPageable = PageRequest.of(paginationParams1.getCurrentPage(), paginationParams1.getPageSize(), Sort.by("id.requestDate").descending());
         else
             userBookBorrowingsPageable = PageRequest.of(paginationParams1.getCurrentPage(), paginationParams1.getPageSize(), Sort.by("borrowingDate").descending());
