@@ -9,10 +9,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 public class BoundaryBorrowingDateValueForUserSpecification implements Specification<BookBorrowing> {
-    private Long userId;
-    private String dateType;
-    private boolean latestDate;
-    private SelectedDateUserBorrowingsSpecification selectedDateUserBorrowingsSpecification;
+    private final Long userId;
+    private final String dateType;
+    private final boolean latestDate;
+    private final SelectedDateUserBorrowingsSpecification selectedDateUserBorrowingsSpecification;
 
     public BoundaryBorrowingDateValueForUserSpecification(String dateType, Long userId, boolean latest) {
         this.userId = userId;

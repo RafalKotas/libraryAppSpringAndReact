@@ -18,7 +18,7 @@ public class BookInitializator implements CommandLineRunner {
     @Autowired
     private BookRepository bookRepository;
 
-    String [][] books = {
+    private final String [][] books = {
             {"How to Draw What You See", "Rudy De Reyna", "Drawing", "This volume is based on a simple premise: by learning to recognize the basichape of an object - cube, cylinder, cone and sphere - you can draw it. Afteressons on drawing objects in the four basic shapes, the author demonstratesow these shapes apply to still lifes, outdoor scenes, and people.", "1996"},
             {"The Natural Way to Draw : A Working Plan for Art Study", "Kimon Nicolaides", "Drawing", "A series of exercises designed to assist the art student to develop his own creativity, rather than imitate that of others.", "1990"},
             {"Perspective : An Essential Guide Featuring Basic Principles, Advanced Techniques, and Practical Applications", "William F. Powell", "Drawing", "Whether you specialize in drawing - even cartooning and animation - or prefer media such as acrylic, oil, pastel, or watercolor, a good knowledge of perspective is invaluable. It is the foundation of all great paintings and drawings, no matter what medium. Perspective shows you everything you need to know to make objects look three dimensional.", "1989"},

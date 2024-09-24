@@ -1,6 +1,7 @@
 package com.example.library.specifications.UserBorrowingsSpecification;
 
 import com.example.library.model.BookBorrowing;
+import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -9,25 +10,15 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Date;
 
+@AllArgsConstructor
 public class UserBorrowingStatusReturnedSpecification implements Specification<BookBorrowing> {
-    private Long userId;
-    private Date requestDateMin;
-    private Date requestDateMax;
-    private Date borrowingDateMin;
-    private Date borrowingDateMax;
-    private Date returnDateMin;
-    private Date returnDateMax;
-
-    public UserBorrowingStatusReturnedSpecification(Long userId, Date requestDateMin, Date requestDateMax
-            , Date borrowingDateMin, Date borrowingDateMax, Date returnDateMin, Date returnDateMax) {
-        this.userId = userId;
-        this.requestDateMin = requestDateMin;
-        this.requestDateMax = requestDateMax;
-        this.borrowingDateMin = borrowingDateMin;
-        this.borrowingDateMax = borrowingDateMax;
-        this.returnDateMin = returnDateMin;
-        this.returnDateMax = returnDateMax;
-    }
+    private final Long userId;
+    private final Date requestDateMin;
+    private final Date requestDateMax;
+    private final Date borrowingDateMin;
+    private final Date borrowingDateMax;
+    private final Date returnDateMin;
+    private final Date returnDateMax;
 
     @Override
     public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder builder) {

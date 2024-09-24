@@ -2,6 +2,7 @@ package com.example.library.security.services;
 
 import com.example.library.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,39 +14,24 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails{
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private final Long id;
 
-    private String username;
+    private final String username;
 
-    private String email;
+    private final String firstName;
 
-    private String firstName;
+    private final String lastName;
 
-    private String lastName;
+    private final String email;
 
     @JsonIgnore
-    private String password;
+    private final String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
-
-    public UserDetailsImpl(Long id,
-                           String username,
-                           String firstName,
-                           String lastName,
-                           String email,
-                           String password,
-                           Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()

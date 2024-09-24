@@ -10,9 +10,9 @@ import javax.persistence.criteria.Root;
 import java.util.Date;
 
 public class UserBorrowingStatusInQueueSpecification implements Specification<BookBorrowing> {
-    private Long userId;
-    private Date requestDateMin;
-    private Date requestDateMax;
+    private final Long userId;
+    private final Date requestDateMin;
+    private final Date requestDateMax;
 
     public UserBorrowingStatusInQueueSpecification(Long userId, Date requestDateMin, Date requestDateMax) {
         this.userId = userId;

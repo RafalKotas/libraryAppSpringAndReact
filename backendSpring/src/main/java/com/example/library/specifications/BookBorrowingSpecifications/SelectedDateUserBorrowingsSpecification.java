@@ -9,8 +9,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 public class SelectedDateUserBorrowingsSpecification implements Specification<BookBorrowing> {
-    private NotNullBorrowingsDatesSpecification notNullBorrowingsDatesSpecification;
-    private UserBorrowingsSpecification userBorrowingsSpecification;
+    private final NotNullBorrowingsDatesSpecification notNullBorrowingsDatesSpecification;
+    private final UserBorrowingsSpecification userBorrowingsSpecification;
 
     public SelectedDateUserBorrowingsSpecification(String dateType, Long userId) {
         this.notNullBorrowingsDatesSpecification = new NotNullBorrowingsDatesSpecification(dateType);

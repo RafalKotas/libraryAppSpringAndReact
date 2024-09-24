@@ -10,12 +10,13 @@ import javax.persistence.criteria.Root;
 import java.util.Date;
 
 public class UserBorrowingsStatusAllSpecification implements Specification<BookBorrowing> {
-    private UserBorrowingStatusInQueueSpecification userBorrowingStatusInQueueSpecification;
-    private UserBorrowingStatusOnHandsSpecification userBorrowingStatusOnHandsSpecification;
-    private UserBorrowingStatusReturnedSpecification userBorrowingStatusReturnedSpecification;
+    private final UserBorrowingStatusInQueueSpecification userBorrowingStatusInQueueSpecification;
+    private final UserBorrowingStatusOnHandsSpecification userBorrowingStatusOnHandsSpecification;
+    private final UserBorrowingStatusReturnedSpecification userBorrowingStatusReturnedSpecification;
 
-    public UserBorrowingsStatusAllSpecification(Long userId, Date requestDateMin, Date requestDateMax
-            , Date borrowingDateMin, Date borrowingDateMax, Date returnDateMin, Date returnDateMax) {
+    public UserBorrowingsStatusAllSpecification(Long userId, Date requestDateMin, Date requestDateMax,
+                                                Date borrowingDateMin, Date borrowingDateMax,
+                                                Date returnDateMin, Date returnDateMax) {
         this.userBorrowingStatusInQueueSpecification = new UserBorrowingStatusInQueueSpecification(userId, requestDateMin, requestDateMax);
         this.userBorrowingStatusOnHandsSpecification = new UserBorrowingStatusOnHandsSpecification(userId, requestDateMin, requestDateMax,
                 borrowingDateMin, borrowingDateMax);

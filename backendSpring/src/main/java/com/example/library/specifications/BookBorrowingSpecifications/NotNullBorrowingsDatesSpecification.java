@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 
 public class NotNullBorrowingsDatesSpecification implements Specification<BookBorrowing> {
 
-    private String dateColumn;
+    private final String dateColumn;
 
     public NotNullBorrowingsDatesSpecification(String dateType) {
         this.dateColumn = dateType;

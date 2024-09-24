@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 
 public class UserBorrowingsSpecification implements Specification<BookBorrowing> {
 
-    private Long userId;
+    private final Long userId;
 
     public UserBorrowingsSpecification(Long userId) {
         this.userId = userId;
