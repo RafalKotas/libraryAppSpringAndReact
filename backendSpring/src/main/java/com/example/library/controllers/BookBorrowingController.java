@@ -59,19 +59,14 @@ public class BookBorrowingController {
         final PaginationParams paginationParams1 =
                 new ObjectMapper().readValue(paginationParams, PaginationParams.class);
 
-        Pageable userBookBorrowingsPageable;
-
-        if(List.of(BookStatus.IN_QUEUE.name(), BookStatus.ALL.name()).contains(status))
-            userBookBorrowingsPageable = PageRequest.of(paginationParams1.getCurrentPage(), paginationParams1.getPageSize(), Sort.by("id.requestDate").descending());
-        else
-            userBookBorrowingsPageable = PageRequest.of(paginationParams1.getCurrentPage(), paginationParams1.getPageSize(), Sort.by("borrowingDate").descending());
+        Pageable userBookBorrowingsPageable = List.of(BookStatus.IN_QUEUE.name(), BookStatus.ALL.name()).contains(status) ?
+                PageRequest.of(paginationParams1.getCurrentPage(), paginationParams1.getPageSize(), Sort.by("id.requestDate").descending())
+                : PageRequest.of(paginationParams1.getCurrentPage(), paginationParams1.getPageSize(), Sort.by("borrowingDate").descending());
 
         Page<BookBorrowing> pageBookBorrowings = bookBorrowingService.getUserBorrowingsPage(
                 userId, status, dateBoundariesJSON, userBookBorrowingsPageable);
 
-        List<BookBorrowing> bookBorrowings;
-
-        bookBorrowings = pageBookBorrowings.getContent();
+        List<BookBorrowing> bookBorrowings = pageBookBorrowings.getContent();
 
         Optional<UserToken> existActiveUserToken = userTokenRepository.activeTokenWithGivenUserId(userId);
 
@@ -295,11 +290,7 @@ public class BookBorrowingController {
 
             boolean bookFree = bookService.bookFree(bookId);
 
-            Date borrowingDate = null;
-
-            if(bookFree) {
-                borrowingDate = new Date();
-            }
+            Date borrowingDate = bookFree ? new Date() : null;
 
             boolean maximumBorrowingsReached = bookBorrowingService.maximumBooksOnHandsReached(userId);
 

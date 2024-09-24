@@ -200,8 +200,7 @@ public class BookController {
         List<BookBorrowing> usersInQueue = bookBorrowingRepository.usersInBookQueue(bookId);
 
         List<UserInQueueRowData> queueDataRows = new ArrayList<>();
-        for (BookBorrowing bb : usersInQueue
-             ) {
+        for (BookBorrowing bb : usersInQueue) {
             User currentUser = bb.getUser();
 
             UserInQueueRowData currentBorrowingInQueue = new UserInQueueRowData(
