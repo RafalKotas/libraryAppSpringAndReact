@@ -1,9 +1,7 @@
 package com.example.library.specifications;
 
-import com.example.library.model.Book;
 import com.example.library.model.BookBorrowing;
 import com.example.library.model.BookBorrowing_;
-import com.example.library.model.Book_;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;

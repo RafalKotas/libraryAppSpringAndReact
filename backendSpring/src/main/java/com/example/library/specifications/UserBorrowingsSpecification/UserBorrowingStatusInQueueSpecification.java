@@ -1,15 +1,13 @@
 package com.example.library.specifications.UserBorrowingsSpecification;
 
 import com.example.library.model.BookBorrowing;
-import com.example.library.specifications.BookBorrowingSpecifications.SelectedDateUserBorrowingsSpecification;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.Date;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Date;
 
 public class UserBorrowingStatusInQueueSpecification implements Specification<BookBorrowing> {
     private Long userId;
